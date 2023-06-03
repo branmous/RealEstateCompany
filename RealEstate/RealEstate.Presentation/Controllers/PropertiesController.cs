@@ -22,7 +22,7 @@ namespace RealEstate.Presentation.Controllers
         {
             try
             {
-                return Ok(await _propertyService.GetAll());
+                return Ok(await _propertyService.GetAllAsync());
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace RealEstate.Presentation.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await _propertyService.SaveProperty(new Property
+                await _propertyService.SavePropertyAsync(new Property
                 {
                     Address = property.Address,
                     CodeInternal = property.CodeInternal,

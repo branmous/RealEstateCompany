@@ -4,7 +4,8 @@ namespace RealEstate.Domain.Interfaces.Services
 {
     public interface IPropertyService
     {
-        Task<List<Property>> GetAll();
-        Task SaveProperty(Property property);
+        Task<Property> FindByIdAsync(int id);
+        Task<List<Property>> GetAllAsync();
+        Task SavePropertyAsync(Property property);
     }
 }

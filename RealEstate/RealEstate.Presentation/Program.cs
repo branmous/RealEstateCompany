@@ -6,6 +6,7 @@ using RealEstate.Domain.Interfaces;
 using RealEstate.Domain.Interfaces.Services;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
+using RealEstate.Infrastructure.SeedDB;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection", b => b.MigrationsAssembly("RealEstate.Presentation")));
+builder.Services.AddTransient<DataContextSeed>();
 builder.Services.AddIdentity<Owner, IdentityRole>(x =>
 {
     x.User.RequireUniqueEmail = true;
@@ -39,6 +41,19 @@ builder.Services.AddScoped<IPropertyService, PropertyService>();
 
 var app = builder.Build();
 
+SeedData(app);
+
+void SeedData(WebApplication app)
+{
+    IServiceScopeFactory? scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (IServiceScope? scope = scopedFactory!.CreateScope())
+    {
+        DataContextSeed? service = scope.ServiceProvider.GetService<DataContextSeed>();
+        service!.SeedAsync().Wait();
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -47,7 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
