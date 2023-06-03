@@ -1,37 +1,39 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RealEstate.Domain.Interfaces;
+using RealEstate.Infrastructure.Data;
 
 namespace RealEstate.Infrastructure.Repositories
 {
+
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        private readonly DbContext _dbContext;
+        public readonly DataContext Context;
 
-        public BaseRepository(DbContext dbContext)
+        public BaseRepository(DataContext dbContext)
         {
-            _dbContext = dbContext;
+            Context = dbContext;
         }
         public async Task AddAsync(T entity)
         {
-            _dbContext.Add(entity);
-            await _dbContext.SaveChangesAsync();
+            Context.Add(entity);
+            await Context.SaveChangesAsync();
         }
 
         public async Task<List<T>> All()
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            return await Context.Set<T>().ToListAsync();
         }
 
         public async Task DeleteAsync(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
-            await _dbContext.SaveChangesAsync();
+            Context.Set<T>().Remove(entity);
+            await Context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(T entity)
         {
-            _dbContext.Update(entity);
-            await _dbContext.SaveChangesAsync();
+            Context.Update(entity);
+            await Context.SaveChangesAsync();
         }
     }
 }
