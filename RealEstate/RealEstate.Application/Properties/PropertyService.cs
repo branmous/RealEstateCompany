@@ -16,7 +16,13 @@ namespace RealEstate.Application.Properties
 
         public async Task<Property> FindByIdAsync(int id)
         {
-            return await _propertyRepository.FindByIdAsync(id);
+            var property = await _propertyRepository.FindByIdAsync(id);
+            if (property == null)
+            {
+                throw new NotFoundException("Property not found!!!");
+            }
+
+            return property;
         }
 
         public async Task<List<Property>> GetAllAsync()
@@ -40,6 +46,7 @@ namespace RealEstate.Application.Properties
             prop.Address = property.Address;
             prop.Price = property.Price;
             prop.CodeInternal = property.CodeInternal;
+            prop.Year = property.Year;
 
             return await _propertyRepository.UpdateAsync(prop);
         }

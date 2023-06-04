@@ -9,5 +9,11 @@ namespace RealEstate.Infrastructure.Repositories
         public PropertyImageRepository(DataContext dbContext) : base(dbContext)
         {
         }
+
+        public async Task AddRangeAsync(List<PropertyImage> images)
+        {
+            Context.AddRange(images);
+            await Context.SaveChangesAsync();
+        }
     }
 }

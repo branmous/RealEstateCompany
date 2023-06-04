@@ -15,12 +15,15 @@ namespace RealEstate.Presentation.Controllers
     public class PropertiesController : ControllerBase
     {
         private readonly IPropertyService _propertyService;
+        private readonly IPropertyImageService _propertyImageService;
         private readonly IAccountService _accountService;
 
         public PropertiesController(IPropertyService propertyService,
+            IPropertyImageService propertyImageService,
             IAccountService accountService)
         {
             _propertyService = propertyService;
+            _propertyImageService = propertyImageService;
             _accountService = accountService;
         }
 
@@ -30,6 +33,23 @@ namespace RealEstate.Presentation.Controllers
             try
             {
                 return Ok(await _propertyService.GetAllAsync());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetAsync(int id)
+        {
+            try
+            {
+                return Ok(await _propertyService.FindByIdAsync(id));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -92,6 +112,44 @@ namespace RealEstate.Presentation.Controllers
                 });
 
                 return Ok(response);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("{id:int}/SetImages")]
+        public async Task<IActionResult> PostSetImagesAsync(int id, List<IFormFile> propertyImages)
+        {
+            try
+            {
+                if (propertyImages.Count == 0)
+                {
+                    return BadRequest("You must upload at least one image of the property.");
+                }
+
+                var property = await _propertyService.FindByIdAsync(id);
+                List<byte[]> images = new();
+
+                foreach (var image in propertyImages)
+                {
+                    if (image.Length > 0)
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            await image.CopyToAsync(stream);
+                            images.Add(stream.ToArray());
+                        }
+                    }
+                }
+
+                await _propertyImageService.SavePhotos(property, images);
+                return Ok(new { Message = "images saved successfully" });
             }
             catch (NotFoundException ex)
             {
