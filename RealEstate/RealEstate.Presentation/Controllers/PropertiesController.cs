@@ -40,7 +40,35 @@ namespace RealEstate.Presentation.Controllers
                     return BadRequest(ModelState);
                 }
 
-                await _propertyService.SavePropertyAsync(new Property
+                var request = new Property
+                {
+                    Address = property.Address,
+                    CodeInternal = property.CodeInternal,
+                    Name = property.Name,
+                    Price = property.Price,
+                    Year = property.Year,
+                };
+
+                var response = await _propertyService.SavePropertyAsync(request);
+                return StatusCode((int)HttpStatusCode.Created, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> PutAsync(PropertyDTO property)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var response = await _propertyService.UpdateAsync(new Property
                 {
                     Address = property.Address,
                     CodeInternal = property.CodeInternal,
@@ -49,7 +77,7 @@ namespace RealEstate.Presentation.Controllers
                     Year = property.Year,
                 });
 
-                return StatusCode((int)HttpStatusCode.Created, property);
+                return Ok(response);
             }
             catch (Exception ex)
             {

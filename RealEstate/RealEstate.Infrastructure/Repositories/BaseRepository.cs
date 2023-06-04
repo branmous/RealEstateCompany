@@ -13,10 +13,11 @@ namespace RealEstate.Infrastructure.Repositories
         {
             Context = dbContext;
         }
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
             Context.Add(entity);
             await Context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task<List<T>> All()
@@ -30,10 +31,11 @@ namespace RealEstate.Infrastructure.Repositories
             await Context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             Context.Update(entity);
             await Context.SaveChangesAsync();
+            return entity;
         }
     }
 }

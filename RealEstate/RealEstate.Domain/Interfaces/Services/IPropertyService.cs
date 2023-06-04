@@ -6,6 +6,7 @@ namespace RealEstate.Domain.Interfaces.Services
     {
         Task<Property> FindByIdAsync(int id);
         Task<List<Property>> GetAllAsync();
-        Task SavePropertyAsync(Property property);
+        Task<Property> SavePropertyAsync(Property property);
+        Task<Property> UpdateAsync(Property property);
     }
 }

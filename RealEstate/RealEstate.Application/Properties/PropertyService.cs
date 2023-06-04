@@ -23,9 +23,9 @@ namespace RealEstate.Application.Properties
             return await _propertyRepository.All();
         }
 
-        public async Task SavePropertyAsync(Property property)
+        public async Task<Property> SavePropertyAsync(Property property)
         {
-            await _propertyRepository.AddAsync(property!);
+            return await _propertyRepository.AddAsync(property!);
         }
 
         public async Task<Property> UpdateAsync(Property property)
@@ -36,7 +36,11 @@ namespace RealEstate.Application.Properties
                 throw new ArgumentNullException(nameof(property));
             }
 
-            await _propertyRepository.UpdateAsync(property);
+            prop.Address = property.Address;
+            prop.Price = property.Price;
+            prop.CodeInternal = property.CodeInternal;
+
+            return await _propertyRepository.UpdateAsync(prop);
         }
     }
 }

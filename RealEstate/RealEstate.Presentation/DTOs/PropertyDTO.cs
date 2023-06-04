@@ -4,6 +4,8 @@ namespace RealEstate.Presentation.DTOs
 {
     public class PropertyDTO
     {
+        public int Id { get; set; }
+
         [Display(Name = "Property Name")]
         [MaxLength(100, ErrorMessage = "The field {0} must have a maximum of {1} characters.")]
         [Required(ErrorMessage = "Field {0} is required.")]
