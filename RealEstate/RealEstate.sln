@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Domain", "RealEstate.Domain\RealEstate.Domain.csproj", "{AD5F494D-728E-4E8C-A449-171FE34D1709}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Domain", "RealEstate.Domain\RealEstate.Domain.csproj", "{AD5F494D-728E-4E8C-A449-171FE34D1709}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Application", "RealEstate.Application\RealEstate.Application.csproj", "{6E577FED-325A-44C5-8F02-C7B4EC7ABF9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Application", "RealEstate.Application\RealEstate.Application.csproj", "{6E577FED-325A-44C5-8F02-C7B4EC7ABF9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Infrastructure", "RealEstate.Infrastructure\RealEstate.Infrastructure.csproj", "{C2E10003-237C-4948-88A2-589E6D556819}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Infrastructure", "RealEstate.Infrastructure\RealEstate.Infrastructure.csproj", "{C2E10003-237C-4948-88A2-589E6D556819}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Presentation", "RealEstate.Presentation\RealEstate.Presentation.csproj", "{2C85EA99-083A-471A-8115-A4E1F46B36BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealEstate.Presentation", "RealEstate.Presentation\RealEstate.Presentation.csproj", "{2C85EA99-083A-471A-8115-A4E1F46B36BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealEstate.Infrastructure.Test", "RealEstate.Infrastructure.Test\RealEstate.Infrastructure.Test.csproj", "{60EB6573-7D41-4D51-A8F4-B28986003A1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2C85EA99-083A-471A-8115-A4E1F46B36BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C85EA99-083A-471A-8115-A4E1F46B36BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C85EA99-083A-471A-8115-A4E1F46B36BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60EB6573-7D41-4D51-A8F4-B28986003A1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60EB6573-7D41-4D51-A8F4-B28986003A1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60EB6573-7D41-4D51-A8F4-B28986003A1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60EB6573-7D41-4D51-A8F4-B28986003A1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
