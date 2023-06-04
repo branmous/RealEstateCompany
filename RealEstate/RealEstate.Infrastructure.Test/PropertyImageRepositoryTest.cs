@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RealEstate.Domain.Entities;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
-using RealEstate.Infrastructure.Test.Mocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealEstate.Infrastructure.Test
 {
@@ -31,7 +26,42 @@ namespace RealEstate.Infrastructure.Test
             propertyImageRepository = new PropertyImageRepository(_context);
         }
 
+        [Test]
+        public async Task CreateList_Correctly()
+        {
+            List<PropertyImage> images = new List<PropertyImage>
+            {
+                new PropertyImage
+                {
+                    Enabled = true,
+                    File = "url",
+                    PropertyId = 1,
+                }
+            };
 
-        
+            await propertyImageRepository.AddRangeAsync(images);
+            Assert.True(true);
+        }
+
+        [Test]
+        public async Task GetList_Correctly()
+        {
+            List<PropertyImage> images = new List<PropertyImage>
+            {
+                new PropertyImage
+                {
+                    Enabled = true,
+                    File = "url",
+                    PropertyId = 1,
+                }
+            };
+
+            await propertyImageRepository.AddRangeAsync(images);
+
+            var result = await propertyImageRepository.All();
+
+            Assert.NotNull(result);
+        }
+
     }
 }

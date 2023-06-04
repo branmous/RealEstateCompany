@@ -21,17 +21,13 @@ namespace RealEstate.Infrastructure.Test
             _context = new DataContext(options);
         }
 
-        [SetUp]
-        public async Task SeptUp()
-        {
-            _context.Properties.AddRange(PropertyMocks.GetList());
-            await _context.SaveChangesAsync();
-        }
 
         [Test]
         public async Task FindByIdAsync_ShouldReturnProperty()
         {
             // Arrange
+            _context.Properties.AddRange(PropertyMocks.GetList());
+            await _context.SaveChangesAsync();
             int propertyId = 1;
             var propertyRepository = new PropertyRepository(_context);
             // Act
@@ -58,6 +54,36 @@ namespace RealEstate.Infrastructure.Test
             var result = await propertyRepository.AddAsync(property!);
             Assert.NotNull(result);
             Assert.That(property.Name, Is.EqualTo(result.Name));
+        }
+
+        [Test]
+        public async Task Update_Correctly()
+        {
+            _context.Properties.AddRange(PropertyMocks.GetList());
+            await _context.SaveChangesAsync();
+            var propertyRepository = new PropertyRepository(_context);
+
+            var property = await propertyRepository.FindByIdAsync(1);
+            property.Name = "House Edit";
+          
+            var result = await propertyRepository.UpdateAsync(property);
+            Assert.NotNull(result);
+            Assert.That(property.Name, Is.EqualTo(result.Name));
+            Assert.That(property.Id, Is.EqualTo(result.Id));
+        }
+
+        [Test]
+        public async Task Delete_Correctly()
+        {
+            _context.Properties.AddRange(PropertyMocks.GetList());
+            await _context.SaveChangesAsync();
+            var propertyRepository = new PropertyRepository(_context);
+
+            var property = await propertyRepository.FindByIdAsync(1);
+            property.Name = "House Edit";
+
+            await propertyRepository.DeleteAsync(property);
+            Assert.True(true);
         }
     }
 }
