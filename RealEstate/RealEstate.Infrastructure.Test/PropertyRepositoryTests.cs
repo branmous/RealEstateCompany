@@ -9,9 +9,11 @@ namespace RealEstate.Infrastructure.Test
     [TestFixture]
     public class PropertyRepositoryTests
     {
-        private readonly DataContext _context;
+        private DataContext _context;
 
-        public PropertyRepositoryTests()
+
+        [SetUp]
+        public void Setup()
         {
             var options = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(databaseName: "testDatabase")
@@ -20,7 +22,6 @@ namespace RealEstate.Infrastructure.Test
 
             _context = new DataContext(options);
         }
-
 
         [Test]
         public async Task FindByIdAsync_ShouldReturnProperty()
@@ -63,7 +64,7 @@ namespace RealEstate.Infrastructure.Test
             await _context.SaveChangesAsync();
             var propertyRepository = new PropertyRepository(_context);
 
-            var property = await propertyRepository.FindByIdAsync(1);
+            var property = await _context.Properties.FirstAsync();
             property.Name = "House Edit";
 
             var result = await propertyRepository.UpdateAsync(property);
@@ -79,7 +80,7 @@ namespace RealEstate.Infrastructure.Test
             await _context.SaveChangesAsync();
             var propertyRepository = new PropertyRepository(_context);
 
-            var property = await propertyRepository.FindByIdAsync(1);
+            var property = await _context.Properties.LastAsync();
             property.Name = "House Edit";
 
             await propertyRepository.DeleteAsync(property);

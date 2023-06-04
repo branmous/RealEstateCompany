@@ -82,5 +82,56 @@ namespace RealEstate.Infrastructure.Test
             var result = await _ownerRepository.AddUserAsync(owner, "123456");
             Assert.That(result, Is.EqualTo(IdentityResult.Success));
         }
+
+        [Test]
+        public async Task AddUserToRoleAsync_Correctly()
+        {
+            var owner = new Owner
+            {
+                Name = "Mock Name",
+                Email = "mock@mock.com",
+                UserName = "mock@mock.com",
+                Address = "Florida",
+                Birthday = DateTime.Now,
+            };
+
+
+            _userManager.Setup(u => u.AddToRoleAsync(It.IsAny<Owner>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+
+            await _ownerRepository.AddUserToRoleAsync(owner, "ROLE_TEST");
+            Assert.True(true);
+        }
+
+        [Test]
+        public async Task CheckRoleAsync_Correctly()
+        {
+            _roleManager.Setup(u => u.RoleExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+
+            await _ownerRepository.CheckRoleAsync("ROLE_TEST");
+            Assert.True(true);
+        }
+
+        [Test]
+        public async Task CheckRoleAsync_NotExistAndCreateCorrectly()
+        {
+            _roleManager.Setup(u => u.RoleExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
+            _roleManager.Setup(u => u.CreateAsync(It.IsAny<IdentityRole>())).ReturnsAsync(IdentityResult.Success);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+
+            await _ownerRepository.CheckRoleAsync("ROLE_TEST");
+            Assert.True(true);
+        }
+
+        [Test]
+        public async Task LoginAsync_Correctly()
+        {
+            _signInManager.Setup(u=>u.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>())).ReturnsAsync(SignInResult.Success);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+
+            var result = await _ownerRepository.LoginAsync("mock@mock.com","mockPassword");
+            Assert.That(result, Is.EqualTo(SignInResult.Success));
+        }
     }
 }
