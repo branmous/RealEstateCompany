@@ -14,6 +14,17 @@ namespace RealEstate.Application.Accounts
             _ownerRepository = ownerRepository;
         }
 
+        public async Task<Owner> GetUserAsyc(string email)
+        {
+            var user = await _ownerRepository.GetUserAsync(email);
+            if (user == null)
+            {
+                throw new NotFoundException("Owner not found");
+            }
+
+            return user;
+        }
+
         public async Task<Owner> LoginAsync(string email, string password)
         {
             var result = await _ownerRepository.LoginAsync(email, password);
