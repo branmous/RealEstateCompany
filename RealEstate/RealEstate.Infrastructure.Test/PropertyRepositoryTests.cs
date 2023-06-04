@@ -17,7 +17,7 @@ namespace RealEstate.Infrastructure.Test
                 .UseInMemoryDatabase(databaseName: "testDatabase")
                 .EnableSensitiveDataLogging(true)
                 .Options;
-            
+
             _context = new DataContext(options);
         }
 
@@ -65,7 +65,7 @@ namespace RealEstate.Infrastructure.Test
 
             var property = await propertyRepository.FindByIdAsync(1);
             property.Name = "House Edit";
-          
+
             var result = await propertyRepository.UpdateAsync(property);
             Assert.NotNull(result);
             Assert.That(property.Name, Is.EqualTo(result.Name));
