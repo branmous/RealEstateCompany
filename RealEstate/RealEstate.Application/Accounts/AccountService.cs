@@ -8,10 +8,32 @@ namespace RealEstate.Application.Accounts
     public class AccountService : IAccountService
     {
         private readonly IOwnerRepository _ownerRepository;
+        private readonly IFileStorage _fileStorage;
+        private readonly string _ownerContainer;
 
-        public AccountService(IOwnerRepository ownerRepository)
+        public AccountService(IOwnerRepository ownerRepository,
+            IFileStorage fileStorage)
         {
             _ownerRepository = ownerRepository;
+            _fileStorage = fileStorage;
+            _ownerContainer = "owners";
+        }
+
+        public async Task Register(byte[] photo, Owner owner, string password)
+        {
+            if (photo != null)
+            {
+                var url = await _fileStorage.SaveFileAsync(photo, ".jpg", _ownerContainer);
+                owner.Photo = url;
+            }
+
+            var result = await _ownerRepository.AddUserAsync(owner, password);
+            if (!result.Succeeded)
+            {
+                throw new AuthException(result.Errors!.FirstOrDefault()!.Description);
+            }
+
+            await _ownerRepository.AddUserToRoleAsync(owner, "Owner");
         }
 
         public async Task<Owner> GetUserAsyc(string email)

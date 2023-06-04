@@ -25,6 +25,50 @@ namespace RealEstate.Presentation.Controllers
             _accountService = accountService;
         }
 
+        [HttpPost("register")]
+        public async Task<IActionResult> RegisterAsync([FromForm] RegisterDTO register)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                byte[] photo = null!;
+                if (register.Photo != null)
+                {
+                    if (register.Photo.Length > 0)
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            await register.Photo.CopyToAsync(stream);
+                            photo = stream.ToArray();
+                        }
+                    }
+                }
+
+                await _accountService.Register(photo, new Owner
+                {
+                    Address = register.Address,
+                    Birthday = register.Birthday,
+                    Email = register.Email,
+                    Name = register.Name,
+                    UserName = register.Email,
+                }, register.PasswordConfirm);
+
+                return StatusCode((int)HttpStatusCode.Created, "Owner successfully registered!!!");
+            }
+            catch (AuthException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody] AuthDTO login)
         {
