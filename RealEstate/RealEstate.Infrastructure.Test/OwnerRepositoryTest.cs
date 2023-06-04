@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using NUnit.Framework;
 using RealEstate.Domain.Entities;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
@@ -127,10 +126,10 @@ namespace RealEstate.Infrastructure.Test
         [Test]
         public async Task LoginAsync_Correctly()
         {
-            _signInManager.Setup(u=>u.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>())).ReturnsAsync(SignInResult.Success);
+            _signInManager.Setup(u => u.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>())).ReturnsAsync(SignInResult.Success);
             _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
 
-            var result = await _ownerRepository.LoginAsync("mock@mock.com","mockPassword");
+            var result = await _ownerRepository.LoginAsync("mock@mock.com", "mockPassword");
             Assert.That(result, Is.EqualTo(SignInResult.Success));
         }
     }

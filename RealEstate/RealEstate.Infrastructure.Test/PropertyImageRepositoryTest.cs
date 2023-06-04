@@ -8,22 +8,19 @@ namespace RealEstate.Infrastructure.Test
     [TestFixture]
     public class PropertyImageRepositoryTest
     {
-        private readonly DataContext _context;
-        private PropertyImageRepository propertyImageRepository;
+        private DataContext _context;
+        private PropertyImageRepository _propertyImageRepository;
 
-        public PropertyImageRepositoryTest()
+
+        [SetUp]
+        public void SeptUp()
         {
             var options = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(databaseName: "testDatabase")
                 .Options;
 
             _context = new DataContext(options);
-        }
-
-        [SetUp]
-        public async Task SeptUp()
-        {
-            propertyImageRepository = new PropertyImageRepository(_context);
+            _propertyImageRepository = new PropertyImageRepository(_context);
         }
 
         [Test]
@@ -39,7 +36,7 @@ namespace RealEstate.Infrastructure.Test
                 }
             };
 
-            await propertyImageRepository.AddRangeAsync(images);
+            await _propertyImageRepository.AddRangeAsync(images);
             Assert.True(true);
         }
 
@@ -56,9 +53,9 @@ namespace RealEstate.Infrastructure.Test
                 }
             };
 
-            await propertyImageRepository.AddRangeAsync(images);
+            await _propertyImageRepository.AddRangeAsync(images);
 
-            var result = await propertyImageRepository.All();
+            var result = await _propertyImageRepository.All();
 
             Assert.NotNull(result);
         }
