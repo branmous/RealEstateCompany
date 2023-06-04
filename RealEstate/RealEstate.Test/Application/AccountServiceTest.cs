@@ -1,25 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Moq;
 using RealEstate.Application.Accounts;
-using RealEstate.Application.Properties;
 using RealEstate.Domain.Entities;
 using RealEstate.Domain.Exceptions;
 using RealEstate.Domain.Interfaces;
-using RealEstate.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RealEstate.Infrastructure.Repositories;
 
-namespace RealEstate.Application.Test
+namespace RealEstate.Test.Application
 {
     [TestFixture]
     public class AccountServiceTest
     {
         private Mock<IOwnerRepository> _ownerRepository;
         private Mock<IFileStorage> _fileStorage;
-        private AccountService _accountService;
+        private AccountService? _accountService;
 
         [SetUp]
         public void Setup()
@@ -84,7 +78,7 @@ namespace RealEstate.Application.Test
         }
 
         [Test]
-        public async Task GetUserAsyc_NotFoundException()
+        public void GetUserAsyc_NotFoundException()
         {
             var email = "mock@mock.com";
             _ownerRepository.Setup(o => o.GetUserAsync(It.IsAny<string>()));

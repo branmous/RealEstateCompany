@@ -2,9 +2,9 @@
 using RealEstate.Domain.Entities;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
-using RealEstate.Infrastructure.Test.Mocks;
+using RealEstate.Test.Infrastructure.Mocks;
 
-namespace RealEstate.Infrastructure.Test
+namespace RealEstate.Test.Infrastructure
 {
     [TestFixture]
     public class PropertyRepositoryTests

@@ -8,7 +8,7 @@ using RealEstate.Domain.Entities;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
 
-namespace RealEstate.Infrastructure.Test
+namespace RealEstate.Test.Infrastructure
 {
     [TestFixture]
     public class OwnerRepositoryTest
@@ -17,7 +17,7 @@ namespace RealEstate.Infrastructure.Test
         private Mock<UserManager<Owner>> _userManager;
         private Mock<RoleManager<IdentityRole>> _roleManager;
         private Mock<SignInManager<Owner>> _signInManager;
-        private OwnerRepository _ownerRepository;
+        private OwnerRepository? _ownerRepository;
 
         [SetUp]
         public void SetUp()

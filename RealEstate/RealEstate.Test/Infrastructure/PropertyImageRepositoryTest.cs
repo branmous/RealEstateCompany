@@ -3,7 +3,7 @@ using RealEstate.Domain.Entities;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
 
-namespace RealEstate.Infrastructure.Test
+namespace RealEstate.Test.Infrastructure
 {
     [TestFixture]
     public class PropertyImageRepositoryTest

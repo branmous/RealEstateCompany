@@ -1,6 +1,6 @@
 ﻿using RealEstate.Domain.Entities;
 
-namespace RealEstate.Infrastructure.Test.Mocks
+namespace RealEstate.Test.Infrastructure.Mocks
 {
     internal class PropertyMocks
     {

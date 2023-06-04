@@ -3,20 +3,14 @@ using RealEstate.Application.Properties;
 using RealEstate.Domain.Entities;
 using RealEstate.Domain.Exceptions;
 using RealEstate.Domain.Interfaces;
-using RealEstate.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RealEstate.Application.Test
+namespace RealEstate.Test.Application
 {
     [TestFixture]
     internal class PropertyServiceTest
     {
         private Mock<IPropertyRepository> _propertyRepository;
-        private PropertyService _propertyService;
+        private PropertyService? _propertyService;
 
         [SetUp]
         public void Setup()
