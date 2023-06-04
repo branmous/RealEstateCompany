@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RealEstate.Domain.Entities;
 using RealEstate.Domain.Interfaces.Services;
 using RealEstate.Presentation.DTOs;
@@ -6,8 +8,9 @@ using System.Net;
 
 namespace RealEstate.Presentation.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
     public class PropertiesController : ControllerBase
     {
         private readonly IPropertyService _propertyService;

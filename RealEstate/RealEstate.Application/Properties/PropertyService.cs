@@ -1,4 +1,5 @@
 ﻿using RealEstate.Domain.Entities;
+using RealEstate.Domain.Exceptions;
 using RealEstate.Domain.Interfaces;
 using RealEstate.Domain.Interfaces.Services;
 
@@ -33,7 +34,7 @@ namespace RealEstate.Application.Properties
             var prop = await _propertyRepository.FindByIdAsync(property.Id);
             if (prop == null)
             {
-                throw new ArgumentNullException(nameof(property));
+                throw new NotFoundException("Property not found!!!");
             }
 
             prop.Address = property.Address;

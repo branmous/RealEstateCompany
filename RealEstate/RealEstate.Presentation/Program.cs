@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using RealEstate.Application.Accounts;
 using RealEstate.Application.Properties;
 using RealEstate.Domain.Entities;
 using RealEstate.Domain.Interfaces;
@@ -7,6 +10,7 @@ using RealEstate.Domain.Interfaces.Services;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
 using RealEstate.Infrastructure.SeedDB;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,12 +36,27 @@ builder.Services.AddIdentity<Owner, IdentityRole>(x =>
     .AddEntityFrameworkStores<DataContext>()
     .AddDefaultTokenProviders();
 
+
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
 builder.Services.AddScoped<IPropertyTraceRepository, PropertyTraceRepository>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+
 builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(x => x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwtKey"]!)),
+        ClockSkew = TimeSpan.Zero
+    });
+
 
 var app = builder.Build();
 

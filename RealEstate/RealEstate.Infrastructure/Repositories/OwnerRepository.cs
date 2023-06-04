@@ -11,17 +11,17 @@ namespace RealEstate.Infrastructure.Repositories
         private readonly DataContext _dataContext;
         private readonly UserManager<Owner> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<Owner> _signInManage;
+        private readonly SignInManager<Owner> _signInManager;
 
         public OwnerRepository(DataContext dataContext,
             UserManager<Owner> userManager,
             RoleManager<IdentityRole> roleManager,
-            SignInManager<Owner> signInManage)
+            SignInManager<Owner> signInManager)
         {
             _dataContext = dataContext;
             _userManager = userManager;
             _roleManager = roleManager;
-            _signInManage = signInManage;
+            _signInManager = signInManager;
         }
 
         public async Task<IdentityResult> AddUserAsync(Owner owner, string password)
@@ -50,6 +50,16 @@ namespace RealEstate.Infrastructure.Repositories
         {
             var owner = await _dataContext.Users.FirstOrDefaultAsync(u => u.Email! == email);
             return owner!;
+        }
+
+        public async Task<SignInResult> LoginAsync(string email, string password)
+        {
+            return await _signInManager.PasswordSignInAsync(email, password, false, false);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

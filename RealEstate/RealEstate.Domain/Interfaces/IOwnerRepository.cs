@@ -12,5 +12,10 @@ namespace RealEstate.Domain.Interfaces
         Task CheckRoleAsync(string roleName);
 
         Task AddUserToRoleAsync(Owner owner, string roleName);
+
+        Task<SignInResult> LoginAsync(string email, string password);
+
+        Task LogoutAsync();
+
     }
 }
