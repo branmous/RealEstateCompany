@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 using RealEstate.Domain.Entities;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
@@ -14,9 +14,9 @@ namespace RealEstate.Test.Infrastructure
     public class OwnerRepositoryTest
     {
         private DataContext _dataContext;
-        private Mock<UserManager<Owner>> _userManager;
-        private Mock<RoleManager<IdentityRole>> _roleManager;
-        private Mock<SignInManager<Owner>> _signInManager;
+        private UserManager<Owner> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
+        private SignInManager<Owner> _signInManager;
         private OwnerRepository? _ownerRepository;
 
         [SetUp]
@@ -27,38 +27,32 @@ namespace RealEstate.Test.Infrastructure
             .EnableSensitiveDataLogging(true)
                     .Options;
 
-            var userStoreMock = new Mock<IUserStore<Owner>>();
-            var optonMock = new Mock<IOptions<IdentityOptions>>();
-            var passwordHasherMock = new Mock<IPasswordHasher<Owner>>();
-            var userValidatorsMock = new Mock<IEnumerable<IUserValidator<Owner>>>();
-            var passwordValidatorsMock = new Mock<IEnumerable<IPasswordValidator<Owner>>>();
-            var keyNormalizerMock = new Mock<ILookupNormalizer>();
-            var errorsMock = new Mock<IdentityErrorDescriber>();
-            var servicesMock = new Mock<IServiceProvider>();
-            var loggerMock = new Mock<ILogger<UserManager<Owner>>>();
+            _userManager = Substitute.For<UserManager<Owner>>(
+                        Substitute.For<IUserStore<Owner>>(),
+                        null, null, null, null, null, null, null, null
+                    );
 
+            _signInManager = Substitute.For<SignInManager<Owner>>(
+                                    _userManager,
+                                    Substitute.For<IHttpContextAccessor>(),
+                                    Substitute.For<IUserClaimsPrincipalFactory<Owner>>(),
+                                    null, null, null, null
+                                );
 
-            _userManager = new Mock<UserManager<Owner>>(Mock.Of<IUserStore<Owner>>(),
+            _userManager = Substitute.For<UserManager<Owner>>(Substitute.For<IUserStore<Owner>>(),
                                                         null,
-                                                        Mock.Of<IPasswordHasher<Owner>>(),
-                                                        null,
-                                                        null,
+                                                        Substitute.For<IPasswordHasher<Owner>>(),
                                                         null,
                                                         null,
                                                         null,
-                                                        Mock.Of<ILogger<UserManager<Owner>>>());
-            _roleManager = new Mock<RoleManager<IdentityRole>>(Mock.Of<IRoleStore<IdentityRole>>(),
                                                         null,
                                                         null,
-                                                        null,
-                                                        null);
-            _signInManager = new Mock<SignInManager<Owner>>(
-                                                        _userManager.Object,
-                                                        Mock.Of<IHttpContextAccessor>(),
-                                                        Mock.Of<IUserClaimsPrincipalFactory<Owner>>(),
-                                                        null,
-                                                        null,
-                                                        null);
+                                                        Substitute.For<ILogger<UserManager<Owner>>>());
+            _roleManager = Substitute.For<RoleManager<IdentityRole>>(
+                                Substitute.For<IRoleStore<IdentityRole>>(),
+                                null, null, null, null
+                            );
+
             _dataContext = new DataContext(options);
         }
 
@@ -74,12 +68,9 @@ namespace RealEstate.Test.Infrastructure
                 Birthday = DateTime.Now,
             };
 
-
-            _userManager.Setup(u => u.CreateAsync(It.IsAny<Owner>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
-            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
-
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager, _roleManager, _signInManager);
             var result = await _ownerRepository.AddUserAsync(owner, "123456");
-            Assert.That(result, Is.EqualTo(IdentityResult.Success));
+            await _userManager.Received().CreateAsync(owner, "123456");
         }
 
         [Test]
@@ -93,20 +84,17 @@ namespace RealEstate.Test.Infrastructure
                 Address = "Florida",
                 Birthday = DateTime.Now,
             };
-
-
-            _userManager.Setup(u => u.AddToRoleAsync(It.IsAny<Owner>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
-            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager, _roleManager, _signInManager);
 
             await _ownerRepository.AddUserToRoleAsync(owner, "ROLE_TEST");
-            Assert.True(true);
+            await _userManager.Received().AddToRoleAsync(owner, "ROLE_TEST");
         }
 
         [Test]
         public async Task CheckRoleAsync_Correctly()
         {
-            _roleManager.Setup(u => u.RoleExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
-            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+            _roleManager.RoleExistsAsync(Arg.Any<string>()).Returns(true);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager, _roleManager, _signInManager);
 
             await _ownerRepository.CheckRoleAsync("ROLE_TEST");
             Assert.True(true);
@@ -115,9 +103,9 @@ namespace RealEstate.Test.Infrastructure
         [Test]
         public async Task CheckRoleAsync_NotExistAndCreateCorrectly()
         {
-            _roleManager.Setup(u => u.RoleExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
-            _roleManager.Setup(u => u.CreateAsync(It.IsAny<IdentityRole>())).ReturnsAsync(IdentityResult.Success);
-            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+            _roleManager.RoleExistsAsync(Arg.Any<string>()).Returns(true);
+            _roleManager.CreateAsync(Arg.Any<IdentityRole>()).Returns(IdentityResult.Success);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager, _roleManager, _signInManager);
 
             await _ownerRepository.CheckRoleAsync("ROLE_TEST");
             Assert.True(true);
@@ -126,11 +114,10 @@ namespace RealEstate.Test.Infrastructure
         [Test]
         public async Task LoginAsync_Correctly()
         {
-            _signInManager.Setup(u => u.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>())).ReturnsAsync(SignInResult.Success);
-            _ownerRepository = new OwnerRepository(_dataContext, _userManager.Object, _roleManager.Object, _signInManager.Object);
+            _ownerRepository = new OwnerRepository(_dataContext, _userManager, _roleManager, _signInManager);
 
             var result = await _ownerRepository.LoginAsync("mock@mock.com", "mockPassword");
-            Assert.That(result, Is.EqualTo(SignInResult.Success));
+            await _signInManager.Received().PasswordSignInAsync("mock@mock.com", "mockPassword", false, false);
         }
     }
 }
