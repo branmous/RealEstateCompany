@@ -19,10 +19,96 @@ namespace RealEstate.Infrastructure.SeedDB
         {
             await _dataContext.Database.EnsureCreatedAsync();
             await CheckRolesAsync();
-            await CheckUserAsync("brandon@yopmail.com");
+            var owner = await CheckUserAsync("brandon@yopmail.com");
+            await CheckProperties(owner);
         }
 
-        private async Task CheckUserAsync(string email)
+        private async Task CheckProperties(Owner owner)
+        {
+            if (owner != null)
+            {
+                if (!_dataContext.Properties.Any())
+                {
+                    _dataContext.Properties.AddRange(new List<Property>
+                    {
+                        new Property {
+                            Name = "My House",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My house 2",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                         new Property {
+                            Name = "My House 3",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My house 4",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My House 5",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My house 6",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My house 7",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My house 8",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My house 9",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        },
+                        new Property {
+                            Name = "My house 10",
+                            Address = "Florida",
+                            CodeInternal= "12345",
+                            Price = 2000,
+                            OwnerId = owner!.Id
+                        }
+                    });
+                }
+
+                await _dataContext.SaveChangesAsync();
+            }
+        }
+
+        private async Task<Owner> CheckUserAsync(string email)
         {
             var owner = await _ownerRepository.GetUserAsync(email);
             if (owner == null)
@@ -39,6 +125,8 @@ namespace RealEstate.Infrastructure.SeedDB
                 await _ownerRepository.AddUserAsync(owner, "123456");
                 await _ownerRepository.AddUserToRoleAsync(owner, "Owner");
             }
+
+            return owner;
         }
 
         private async Task CheckRolesAsync()
