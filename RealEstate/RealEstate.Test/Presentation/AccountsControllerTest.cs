@@ -5,11 +5,6 @@ using RealEstate.Domain.Entities;
 using RealEstate.Domain.Interfaces.Services;
 using RealEstate.Presentation.Controllers;
 using RealEstate.Presentation.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealEstate.Test.Presentation
 {
@@ -56,6 +51,24 @@ namespace RealEstate.Test.Presentation
             Assert.IsNotNull(result);
             Assert.That(result.StatusCode, Is.EqualTo(200));
             Assert.IsNotNull(result.Value);
+        }
+
+        [Test]
+        public async Task LoginAsync_ModelInvalid()
+        {
+            AuthDTO auth = new AuthDTO
+            {
+                Email = "mock",
+                Password = ""
+            };
+
+            _accountsController.ModelState.AddModelError("Email", "The Email is invalid.");
+
+            var result = await _accountsController.LoginAsync(auth) as BadRequestObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(400));
+
         }
     }
 }
