@@ -30,6 +30,11 @@ namespace RealEstate.Application.Properties
             return await _propertyRepository.All();
         }
 
+        public async Task<List<Property>> GetAllWithPaginateAsync(int page, int recordsNumber)
+        {
+            return await _propertyRepository.GetAllWithPaginateAsync(page, recordsNumber);
+        }
+
         public async Task<Property> SavePropertyAsync(Property property)
         {
             return await _propertyRepository.AddAsync(property!);
@@ -49,6 +54,18 @@ namespace RealEstate.Application.Properties
             prop.Year = property.Year;
 
             return await _propertyRepository.UpdateAsync(prop);
+        }
+
+        public async Task UpdatePriceAsync(int id, decimal price)
+        {
+            var property = await _propertyRepository.FindByIdAsync(id);
+            if (property == null)
+            {
+                throw new NotFoundException("Property not found!!!");
+            }
+
+            property.Price = price;
+            await _propertyRepository.UpdateAsync(property);
         }
     }
 }

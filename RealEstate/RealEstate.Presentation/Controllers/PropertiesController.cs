@@ -28,11 +28,11 @@ namespace RealEstate.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO paginate)
         {
             try
             {
-                return Ok(await _propertyService.GetAllAsync());
+                return Ok(await _propertyService.GetAllWithPaginateAsync(paginate.Page, paginate.RecordsNumber));
             }
             catch (Exception ex)
             {
@@ -150,6 +150,24 @@ namespace RealEstate.Presentation.Controllers
 
                 await _propertyImageService.SavePhotos(property, images);
                 return Ok(new { Message = "Images saved successfully" });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPatch("{id:int}/price")]
+        public async Task<IActionResult> PatchPrice(int id, [FromBody] PropertyPriceDTO priceDTO)
+        {
+            try
+            {
+                await _propertyService.UpdatePriceAsync(id, priceDTO.Price);
+                return Ok(true);
             }
             catch (NotFoundException ex)
             {

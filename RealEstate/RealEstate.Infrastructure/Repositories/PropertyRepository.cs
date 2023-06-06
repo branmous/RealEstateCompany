@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RealEstate.Domain.Entities;
 using RealEstate.Domain.Interfaces;
+using RealEstate.Domain.Specifications;
 using RealEstate.Infrastructure.Data;
 
 namespace RealEstate.Infrastructure.Repositories
@@ -15,6 +16,13 @@ namespace RealEstate.Infrastructure.Repositories
         {
             var property = await Context.Properties.FirstOrDefaultAsync(p => p!.Id == id);
             return property!;
+        }
+
+        public async Task<List<Property>> GetAllWithPaginateAsync(int page, int recordsNumber)
+        {
+            var query = Context.Properties.AsQueryable();
+
+            return await query.OrderByDescending(p => p.Id).Paginate(page, recordsNumber).ToListAsync();
         }
     }
 }
