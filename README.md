@@ -9,6 +9,8 @@ The API Real Estate Company web application is a platform designed to obtain inf
 - **Change Price:** This function allows you to update the price of the property.
 - **Update Property:** This functionality allows you to update property features.
 - **List property with filters:** You can use filters and pagination to search for properties using this feature.
+- **Login:** Added a login endpoint for owners to access and view their property information.
+- **Register:** A user registry was added so that owners can perform all the above mentioned functionalities.
 
 ## Installation and configuration
 
@@ -19,7 +21,7 @@ The API Real Estate Company web application is a platform designed to obtain inf
 ```json=
 {
   "ConnectionStrings": {
-    "LocalConnection": <<your Connection Strings>>,
+    "LocalConnection": <<your Connection String>>,
   }
 }
 ```
@@ -34,11 +36,21 @@ The application follows the Clean Architecture. The layer structure is as follow
     - RealEstate.Infrastructure
     - RealEstate.Test
 ```
+
+### Architecture diagram
+![](https://hackmd.io/_uploads/SkI_VkgPn.png)
+
+
 ## Technologies used
 - .NET Core 7.0
 - NUnit (for unit test)
 - SQL Server
 - Azure Blob Storage
+
+## Azure Blob Storage
+To upload both property images and owner photos, Azure's Blob Storage was used for storage. In this way, the database records the public URL of the image.
+![](https://hackmd.io/_uploads/H1TE1Jgwn.png)
+![](https://hackmd.io/_uploads/BkiSy1gwh.png)
 
 # API endpoints
 
@@ -244,4 +256,16 @@ public class PropertyRepositoryTests
     }
 }
 ```
+Run the following commands to view the Coverage Report
 
+```bash=
+dotnet test --collect:"Code Coverage"
+```
+Report Generator
+```bash=
+reportgenerator "-reports:./**/coverage.cobertura.xml" "-targetdir:./CoverageReport" "-reporttypes:Html"
+```
+ 
+Go to folder CoverageReport and open in browser index.html
+
+![](https://hackmd.io/_uploads/SJlU00Jv2.png)
