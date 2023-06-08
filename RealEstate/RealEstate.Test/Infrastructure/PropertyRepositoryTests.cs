@@ -2,7 +2,7 @@
 using RealEstate.Domain.Entities;
 using RealEstate.Infrastructure.Data;
 using RealEstate.Infrastructure.Repositories;
-using RealEstate.Test.Infrastructure.Mocks;
+using RealEstate.Test.Mocks;
 
 namespace RealEstate.Test.Infrastructure
 {

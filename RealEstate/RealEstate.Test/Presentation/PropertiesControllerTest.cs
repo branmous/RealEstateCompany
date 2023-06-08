@@ -7,7 +7,7 @@ using RealEstate.Domain.Entities;
 using RealEstate.Domain.Interfaces.Services;
 using RealEstate.Presentation.Controllers;
 using RealEstate.Presentation.DTOs;
-using RealEstate.Test.Infrastructure.Mocks;
+using RealEstate.Test.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,21 +44,13 @@ namespace RealEstate.Test.Presentation
         public async Task GetAll_Correctly()
         {
             // Arrage
-            var owner = new Owner
-            {
-                Id = "211bd761-d46c-41b7-9c7f-301fb8239b73",
-                Name = "Mock Name",
-                Email = "mock@mock.com",
-                UserName = "mock@mock.com",
-                Address = "Florida",
-                Birthday = DateTime.Now,
-            };
+            var owner = OwnerMock.GetEntity();
 
             List<Property> properties = PropertyMocks.GetList();
 
             _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ReturnsAsync(owner);
             _propertyService.Setup(a => a.GetAllWithPaginateAsync(owner.Id, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(properties);
-            
+
             var result = await _propertiesController.GetAsync(new PaginationDTO()) as OkObjectResult;
 
             Assert.IsNotNull(result);
@@ -70,15 +62,7 @@ namespace RealEstate.Test.Presentation
         public async Task GetAll_ForID_Correctly()
         {
             // Arrage
-            Property property = new Property
-            {
-                Id = 1,
-                Name = "My House",
-                Address = "Florida",
-                CodeInternal = "12345",
-                Price = 2000,
-                OwnerId = "211bd761-d46c-41b7-9c7f-301fb8239b73"
-            };
+            var property = PropertyMocks.GetEntity();
 
             _propertyService.Setup(a => a.FindByIdAsync(It.IsAny<int>())).ReturnsAsync(property);
 
@@ -86,6 +70,24 @@ namespace RealEstate.Test.Presentation
 
             Assert.IsNotNull(result);
             Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.IsNotNull(result.Value);
+        }
+
+        [Test]
+        public async Task Post_Correctly()
+        {
+            // Arrage
+            var property = PropertyMocks.GetEntity();
+            var propertyDTO = PropertyMocks.GetDTO();
+            var owner = OwnerMock.GetEntity();
+
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ReturnsAsync(owner);
+            _propertyService.Setup(a => a.SavePropertyAsync(It.IsAny<Property>())).ReturnsAsync(property);
+
+            var result = await _propertiesController.PostAsync(propertyDTO) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(201));
             Assert.IsNotNull(result.Value);
         }
     }
