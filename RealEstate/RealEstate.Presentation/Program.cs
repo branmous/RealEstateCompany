@@ -55,7 +55,7 @@ builder.Services.AddSwaggerGen(c =>
         });
 });
 
-builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DockerConnection", b => b.MigrationsAssembly("RealEstate.Presentation")));
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection", b => b.MigrationsAssembly("RealEstate.Presentation")));
 builder.Services.AddTransient<DataContextSeed>();
 builder.Services.AddIdentity<Owner, IdentityRole>(x =>
 {
@@ -75,6 +75,7 @@ builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
 builder.Services.AddScoped<IPropertyTraceRepository, PropertyTraceRepository>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IBlobContainerClientFactory, BlobContainerClientFactory>();
 builder.Services.AddScoped<IFileStorage, FileStorage>();
 
 builder.Services.AddScoped<IPropertyService, PropertyService>();
