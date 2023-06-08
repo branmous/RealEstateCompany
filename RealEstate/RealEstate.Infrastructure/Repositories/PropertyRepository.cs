@@ -18,9 +18,16 @@ namespace RealEstate.Infrastructure.Repositories
             return property!;
         }
 
-        public async Task<List<Property>> GetAllWithPaginateAsync(int page, int recordsNumber)
+        public async Task<List<Property>> GetAllWithPaginateAsync(string ownerId, int page, int recordsNumber, string filter = null!)
         {
-            var query = Context.Properties.AsQueryable();
+            var query = Context.Properties.Where(q => q.OwnerId == ownerId).AsQueryable();
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(q => q.OwnerId == ownerId
+                && (q.Name.Contains(filter)
+                || q.Address.Contains(filter)
+                || q.CodeInternal.Contains(filter)));
+            }
 
             return await query.OrderByDescending(p => p.Id).Paginate(page, recordsNumber).ToListAsync();
         }

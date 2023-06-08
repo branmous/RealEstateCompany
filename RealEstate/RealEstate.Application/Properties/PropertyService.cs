@@ -30,9 +30,10 @@ namespace RealEstate.Application.Properties
             return await _propertyRepository.All();
         }
 
-        public async Task<List<Property>> GetAllWithPaginateAsync(int page, int recordsNumber)
+        public async Task<List<Property>> GetAllWithPaginateAsync(string ownerId, int page, int recordsNumber, string filter = null!)
         {
-            return await _propertyRepository.GetAllWithPaginateAsync(page, recordsNumber);
+            
+            return await _propertyRepository.GetAllWithPaginateAsync(ownerId, page, recordsNumber, filter);
         }
 
         public async Task<Property> SavePropertyAsync(Property property)
