@@ -65,5 +65,28 @@ namespace RealEstate.Test.Presentation
             Assert.That(result.StatusCode, Is.EqualTo(200));
             Assert.IsNotNull(result.Value);
         }
+
+        [Test]
+        public async Task GetAll_ForID_Correctly()
+        {
+            // Arrage
+            Property property = new Property
+            {
+                Id = 1,
+                Name = "My House",
+                Address = "Florida",
+                CodeInternal = "12345",
+                Price = 2000,
+                OwnerId = "211bd761-d46c-41b7-9c7f-301fb8239b73"
+            };
+
+            _propertyService.Setup(a => a.FindByIdAsync(It.IsAny<int>())).ReturnsAsync(property);
+
+            var result = await _propertiesController.GetAsync(1) as OkObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.IsNotNull(result.Value);
+        }
     }
 }
