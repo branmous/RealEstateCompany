@@ -6,6 +6,6 @@ namespace RealEstate.Domain.Interfaces
     {
         Task<Property> FindByIdAsync(int id);
 
-        Task<List<Property>> GetAllWithPaginateAsync(int page, int recordsNumber);
+        Task<List<Property>> GetAllWithPaginateAsync(string ownerId, int page, int recordsNumber, string filter = null!);
     }
 }

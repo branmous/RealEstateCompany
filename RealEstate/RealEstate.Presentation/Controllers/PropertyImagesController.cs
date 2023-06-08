@@ -44,7 +44,7 @@ namespace RealEstate.Presentation.Controllers
                     }
                 }
 
-                await _propertyImageService.SavePhotos(property, images);
+                await _propertyImageService.SavePhotosAsync(property, images);
                 return Ok(new { Message = "Images saved successfully" });
             }
             catch (NotFoundException ex)

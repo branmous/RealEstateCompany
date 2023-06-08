@@ -1,6 +1,7 @@
 ﻿using RealEstate.Domain.Entities;
+using RealEstate.Presentation.DTOs;
 
-namespace RealEstate.Test.Infrastructure.Mocks
+namespace RealEstate.Test.Mocks
 {
     internal class PropertyMocks
     {
@@ -27,5 +28,29 @@ namespace RealEstate.Test.Infrastructure.Mocks
             };
             return properties;
         }
+
+        public static Property GetEntity()
+        {
+            return new Property
+            {
+                Id = 1,
+                Name = "My House",
+                Address = "Florida",
+                CodeInternal = "12345",
+                Price = 2000,
+                OwnerId = "211bd761-d46c-41b7-9c7f-301fb8239b73"
+            };
+        }
+        public static PropertyDTO GetDTO()
+        {
+            return new PropertyDTO
+            {
+                Name = "My House",
+                Address = "Florida",
+                CodeInternal = "12345",
+                Price = 2000,
+            };
+        }
+
     }
 }

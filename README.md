@@ -40,30 +40,173 @@ The application follows the Clean Architecture. The layer structure is as follow
 - SQL Server
 - Azure Blob Storage
 
-## API endpoints
+# API endpoints
 
-Crear Propiedades
+### Security
+**Bearer**  
 
-```bath=
-POST /api/properties
-```
-Request Body
-```jsonld=
-{
-  "id": 1,
-  "name": "John Doe",
-  "email": "john.doe@example.com"
-}
-```
-Response Success
-```jsonld=
-{
-  "id": 1,
-  "name": "John Doe",
-  "email": "john.doe@example.com"
-}
-```
-......
+| apiKey | *API Key* |
+| ------ | --------- |
+| Name | Authorization |
+| In | header |
+| Description | JWT Authorization header using the Bearer scheme. <br /> <br />                        Enter 'Bearer' [space] and then your token in the text input below.<br /> <br />                        Example: 'Bearer 12345abcdef'<br /> <br /> |
+
+---
+### /api/Accounts/register
+
+#### POST
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| Email | formData |  | Yes | string (email) |
+| Name | formData |  | Yes | string |
+| Address | formData |  | Yes | string |
+| Photo | formData |  | No | file |
+| Birthday | formData |  | Yes | dateTime |
+| Password | formData |  | Yes | password |
+| PasswordConfirm | formData |  | Yes | password |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /api/Accounts/login
+
+#### POST
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| body | body |  | No | [AuthDTO](#authdto) |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+---
+### /api/Properties
+
+#### GET
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| Page | query |  | No | integer |
+| RecordsNumber | query |  | No | integer |
+| Filters | query |  | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+#### POST
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| body | body |  | No | [PropertyDTO](#propertydto) |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+#### PUT
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| body | body |  | No | [PropertyDTO](#propertydto) |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /api/Properties/{id}
+
+#### GET
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| id | path |  | Yes | integer |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /api/Properties/{id}/price
+
+#### PATCH
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| id | path |  | Yes | integer |
+| body | body |  | Yes | [PropertyPriceDTO](#propertypricedto) |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+---
+### /api/PropertyImages/{id}/SetImages
+
+#### POST
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| id | path |  | Yes | integer |
+| propertyImages | formData |  | No | [ binary ] |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+---
+### Models
+
+#### AuthDTO
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| email | string (email) |  | Yes |
+| password | string |  | Yes |
+
+#### PropertyDTO
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| id | integer |  | No |
+| name | string |  | Yes |
+| address | string |  | Yes |
+| price | double |  | Yes |
+| codeInternal | string |  | Yes |
+| year | integer |  | Yes |
+
+#### PropertyPriceDTO
+
+| Name | Type | Description | Required |
+| ---- | ---- | ----------- | -------- |
+| price | double |  | Yes |
+
 
 ## Unit testing
 The application contains unit tests written in NUnit. An example of a unit test for a service is shown below:
@@ -101,5 +244,4 @@ public class PropertyRepositoryTests
     }
 }
 ```
-
 

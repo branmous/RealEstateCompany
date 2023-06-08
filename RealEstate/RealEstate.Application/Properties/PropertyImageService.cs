@@ -18,7 +18,7 @@ namespace RealEstate.Application.Properties
             _propertyContainer = "properties";
         }
 
-        public async Task SavePhotos(Property property, List<byte[]> images)
+        public async Task SavePhotosAsync(Property property, List<byte[]> images)
         {
             List<PropertyImage> propertyImages = new();
             foreach (var image in images)

@@ -29,7 +29,8 @@ namespace RealEstate.Presentation.Controllers
         {
             try
             {
-                return Ok(await _propertyService.GetAllWithPaginateAsync(paginate.Page, paginate.RecordsNumber));
+                var user = await _accountService.GetUserAsyc(User.Identity!.Name!);
+                return Ok(await _propertyService.GetAllWithPaginateAsync(user.Id, paginate.Page, paginate.RecordsNumber, paginate.Filters!));
             }
             catch (Exception ex)
             {
