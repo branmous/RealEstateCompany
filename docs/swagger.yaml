@@ -1,0 +1,276 @@
+openapi: 3.0.1
+info:
+  title: Real Estate Company
+  version: v1
+paths:
+  /api/Accounts/register:
+    post:
+      tags:
+        - Accounts
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - Address
+                - Birthday
+                - Email
+                - Name
+                - Password
+                - PasswordConfirm
+              type: object
+              properties:
+                Email:
+                  type: string
+                  format: email
+                Name:
+                  maxLength: 100
+                  type: string
+                Address:
+                  maxLength: 255
+                  type: string
+                Photo:
+                  type: string
+                  format: binary
+                Birthday:
+                  type: string
+                  format: date-time
+                Password:
+                  maxLength: 20
+                  minLength: 6
+                  type: string
+                  format: password
+                PasswordConfirm:
+                  maxLength: 20
+                  minLength: 6
+                  type: string
+                  format: password
+            encoding:
+              Email:
+                style: form
+              Name:
+                style: form
+              Address:
+                style: form
+              Photo:
+                style: form
+              Birthday:
+                style: form
+              Password:
+                style: form
+              PasswordConfirm:
+                style: form
+      responses:
+        '200':
+          description: Success
+  /api/Accounts/login:
+    post:
+      tags:
+        - Accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AuthDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AuthDTO'
+      responses:
+        '200':
+          description: Success
+  /api/Properties:
+    get:
+      tags:
+        - Properties
+      parameters:
+        - name: Page
+          in: query
+          style: form
+          schema:
+            type: integer
+            format: int32
+        - name: RecordsNumber
+          in: query
+          style: form
+          schema:
+            type: integer
+            format: int32
+        - name: Filters
+          in: query
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+    post:
+      tags:
+        - Properties
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertyDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PropertyDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PropertyDTO'
+      responses:
+        '200':
+          description: Success
+    put:
+      tags:
+        - Properties
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertyDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PropertyDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PropertyDTO'
+      responses:
+        '200':
+          description: Success
+  /api/Properties/{id}:
+    get:
+      tags:
+        - Properties
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+  /api/Properties/{id}/price:
+    patch:
+      tags:
+        - Properties
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PropertyPriceDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PropertyPriceDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PropertyPriceDTO'
+      responses:
+        '200':
+          description: Success
+  /api/PropertyImages/{id}/SetImages:
+    post:
+      tags:
+        - PropertyImages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                propertyImages:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+            encoding:
+              propertyImages:
+                style: form
+      responses:
+        '200':
+          description: Success
+components:
+  schemas:
+    AuthDTO:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          format: email
+        password:
+          minLength: 6
+          type: string
+      additionalProperties: false
+    PropertyDTO:
+      required:
+        - address
+        - codeInternal
+        - name
+        - price
+        - year
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          maxLength: 100
+          minLength: 1
+          type: string
+        address:
+          maxLength: 255
+          minLength: 1
+          type: string
+        price:
+          type: number
+          format: double
+        codeInternal:
+          maxLength: 255
+          minLength: 1
+          type: string
+        year:
+          type: integer
+          format: int32
+      additionalProperties: false
+    PropertyPriceDTO:
+      required:
+        - price
+      type: object
+      properties:
+        price:
+          type: number
+          format: double
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      description: "JWT Authorization header using the Bearer scheme. <br /> <br />\r\n                      Enter 'Bearer' [space] and then your token in the text input below.<br /> <br />\r\n                      Example: 'Bearer 12345abcdef'<br /> <br />"
+      name: Authorization
+      in: header
+security:
+  - Bearer: []

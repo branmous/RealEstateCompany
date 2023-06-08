@@ -38,7 +38,7 @@ The application follows the Clean Architecture. The layer structure is as follow
 ```
 
 ### Architecture diagram
-![](https://hackmd.io/_uploads/SkI_VkgPn.png)
+![](./docs/images/arquitecture.png)
 
 
 ## Technologies used
@@ -49,8 +49,8 @@ The application follows the Clean Architecture. The layer structure is as follow
 
 ## Azure Blob Storage
 To upload both property images and owner photos, Azure's Blob Storage was used for storage. In this way, the database records the public URL of the image.
-![](https://hackmd.io/_uploads/H1TE1Jgwn.png)
-![](https://hackmd.io/_uploads/BkiSy1gwh.png)
+![](./docs/images/blob1.png)
+![](./docs/images/blob2.png)
 
 # API endpoints
 
@@ -219,6 +219,11 @@ To upload both property images and owner photos, Azure's Blob Storage was used f
 | ---- | ---- | ----------- | -------- |
 | price | double |  | Yes |
 
+## Swagger
+In the `docs` folder you will find the `swagger.yaml` file, which contains a detailed description of the endpoints available in the API, as well as examples of their execution. You can use this file to clearly visualize the API structure and test the different endpoints directly from the Swagger environment. We recommend opening the `swagger.yaml` file in a text editor or Swagger visualization tool to get a better understanding of the endpoints and how they work.
+
+![](./docs/images/swagger.png)
+
 
 ## Unit testing
 The application contains unit tests written in NUnit. An example of a unit test for a service is shown below:
@@ -268,4 +273,4 @@ reportgenerator "-reports:./**/coverage.cobertura.xml" "-targetdir:./CoverageRep
  
 Go to folder CoverageReport and open in browser index.html
 
-![](https://hackmd.io/_uploads/SJlU00Jv2.png)
+![](./docs/images/reportcoverage.png)
