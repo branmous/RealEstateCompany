@@ -1,18 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NSubstitute;
-using RealEstate.Application.Accounts;
 using RealEstate.Domain.Entities;
 using RealEstate.Domain.Interfaces.Services;
 using RealEstate.Presentation.Controllers;
 using RealEstate.Presentation.DTOs;
 using RealEstate.Test.Mocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealEstate.Test.Presentation
 {
@@ -89,6 +82,41 @@ namespace RealEstate.Test.Presentation
             Assert.IsNotNull(result);
             Assert.That(result.StatusCode, Is.EqualTo(201));
             Assert.IsNotNull(result.Value);
+        }
+
+        [Test]
+        public async Task Put_Correctly()
+        {
+            // Arrage
+            var property = PropertyMocks.GetEntity();
+            var propertyDTO = PropertyMocks.GetDTO();
+            var owner = OwnerMock.GetEntity();
+
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ReturnsAsync(owner);
+            _propertyService.Setup(a => a.UpdateAsync(It.IsAny<Property>())).ReturnsAsync(property);
+
+            var result = await _propertiesController.PutAsync(propertyDTO) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+            Assert.IsNotNull(result.Value);
+        }
+
+        [Test]
+        public async Task Patch_Correctly()
+        {
+            // Arrage
+            var property = PropertyMocks.GetEntity();
+            var propertyDTO = PropertyMocks.GetDTO();
+            var owner = OwnerMock.GetEntity();
+
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ReturnsAsync(owner);
+            _propertyService.Setup(a => a.UpdatePriceAsync(It.IsAny<int>(), It.IsAny<decimal>()));
+
+            var result = await _propertiesController.PutAsync(propertyDTO) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(200));
         }
     }
 }

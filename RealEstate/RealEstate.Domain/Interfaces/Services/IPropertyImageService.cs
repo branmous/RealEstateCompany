@@ -4,6 +4,6 @@ namespace RealEstate.Domain.Interfaces.Services
 {
     public interface IPropertyImageService
     {
-        Task SavePhotos(Property property, List<byte[]> images);
+        Task SavePhotosAsync(Property property, List<byte[]> images);
     }
 }
