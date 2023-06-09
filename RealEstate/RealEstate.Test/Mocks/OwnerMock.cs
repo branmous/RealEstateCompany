@@ -1,9 +1,5 @@
 ﻿using RealEstate.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RealEstate.Presentation.DTOs;
 
 namespace RealEstate.Test.Mocks
 {
@@ -19,6 +15,36 @@ namespace RealEstate.Test.Mocks
                 UserName = "mock@mock.com",
                 Address = "Florida",
                 Birthday = DateTime.Now,
+            };
+        }
+        public static AuthDTO GetLogin()
+        {
+            return new AuthDTO
+            {
+                Email = "mock@mock.com",
+                Password = "test"
+            }; ;
+        }
+
+        public static AuthDTO GetLoginIncorrect()
+        {
+            return new AuthDTO
+            {
+                Email = "mock",
+                Password = ""
+            }; ;
+        }
+
+        public static RegisterDTO RegisterWithoutPhoto()
+        {
+            return new RegisterDTO
+            {
+                Address = "mock address",
+                Birthday = new DateTime(2000, 1, 1),
+                Email = "mock@mock.com",
+                Name = "mock name",
+                Password = "password",
+                PasswordConfirm = "password",
             };
         }
     }
