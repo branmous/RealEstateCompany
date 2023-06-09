@@ -86,5 +86,23 @@ namespace RealEstate.Test.Infrastructure
             await propertyRepository.DeleteAsync(property);
             Assert.True(true);
         }
+
+        [Test]
+        public async Task GetAllWithPaginateAsync_Correctly()
+        {
+            // Arrange
+            _context.Properties.AddRange(PropertyMocks.GetList());
+            await _context.SaveChangesAsync();
+            var propertyRepository = new PropertyRepository(_context);
+            var ownerId = "211bd761-d46c-41b7-9c7f-301fb8239b73";
+            var page = 1;
+            var recordsNumber = 10;
+            var filter = "House";
+            // Act
+            var property = await propertyRepository.GetAllWithPaginateAsync(ownerId, page, recordsNumber, filter);
+
+            // Asserts
+            Assert.NotNull(property);
+        }
     }
 }
