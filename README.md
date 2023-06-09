@@ -265,7 +265,7 @@ public class PropertyRepositoryTests
 Run the following commands to view the Coverage Report
 
 ```bash=
-dotnet test --collect:"Code Coverage"
+dotnet test --collect:"XPlat Code Coverage"
 ```
 Report Generator
 ```bash=
