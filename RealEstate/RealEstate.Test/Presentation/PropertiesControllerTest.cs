@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RealEstate.Domain.Entities;
+using RealEstate.Domain.Exceptions;
 using RealEstate.Domain.Interfaces.Services;
 using RealEstate.Presentation.Controllers;
 using RealEstate.Presentation.DTOs;
@@ -52,6 +53,17 @@ namespace RealEstate.Test.Presentation
         }
 
         [Test]
+        public async Task GetAll_InternalServerError()
+        {
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ThrowsAsync(new Exception("error"));
+
+            var result = await _propertiesController.GetAsync(new PaginationDTO()) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(500));
+        }
+
+        [Test]
         public async Task GetAll_ForID_Correctly()
         {
             // Arrage
@@ -64,6 +76,28 @@ namespace RealEstate.Test.Presentation
             Assert.IsNotNull(result);
             Assert.That(result.StatusCode, Is.EqualTo(200));
             Assert.IsNotNull(result.Value);
+        }
+
+        [Test]
+        public async Task GetAll_ForID_NotFound()
+        {
+            _propertyService.Setup(a => a.FindByIdAsync(It.IsAny<int>())).ThrowsAsync(new NotFoundException("error"));
+
+            var result = await _propertiesController.GetAsync(1) as NotFoundObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        public async Task GetAll_ForID_InternalServerError()
+        {
+            _propertyService.Setup(a => a.FindByIdAsync(It.IsAny<int>())).ThrowsAsync(new Exception("error"));
+
+            var result = await _propertiesController.GetAsync(1) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         [Test]
@@ -85,6 +119,60 @@ namespace RealEstate.Test.Presentation
         }
 
         [Test]
+        public async Task Post_NotFound()
+        {
+            var propertyDTO = PropertyMocks.GetDTO();
+
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ThrowsAsync(new NotFoundException("error"));
+
+            var result = await _propertiesController.PostAsync(propertyDTO) as NotFoundObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        public async Task Post_InternalServerError()
+        {
+            var propertyDTO = PropertyMocks.GetDTO();
+
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ThrowsAsync(new Exception("error"));
+
+            var result = await _propertiesController.PostAsync(propertyDTO) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(500));
+        }
+
+        [Test]
+        public async Task Post_BadRequest()
+        {
+            var propertyDTO = PropertyMocks.GetDTO();
+            propertyDTO.Name = "";
+
+            _propertiesController.ModelState.AddModelError("Name", "The Name is invalid.");
+
+            var result = await _propertiesController.PostAsync(propertyDTO) as BadRequestObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(400));
+        }
+
+        [Test]
+        public async Task Put_BadRequest()
+        {
+            var propertyDTO = PropertyMocks.GetDTO();
+            propertyDTO.Name = "";
+
+            _propertiesController.ModelState.AddModelError("Name", "The Name is invalid.");
+
+            var result = await _propertiesController.PutAsync(propertyDTO) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(400));
+        }
+
+        [Test]
         public async Task Put_Correctly()
         {
             // Arrage
@@ -103,20 +191,70 @@ namespace RealEstate.Test.Presentation
         }
 
         [Test]
-        public async Task Patch_Correctly()
+        public async Task Put_NotFound()
         {
-            // Arrage
-            var property = PropertyMocks.GetEntity();
             var propertyDTO = PropertyMocks.GetDTO();
-            var owner = OwnerMock.GetEntity();
 
-            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ReturnsAsync(owner);
-            _propertyService.Setup(a => a.UpdatePriceAsync(It.IsAny<int>(), It.IsAny<decimal>()));
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ThrowsAsync(new NotFoundException("error"));
 
             var result = await _propertiesController.PutAsync(propertyDTO) as ObjectResult;
 
             Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        public async Task Put_InternalServerError()
+        {
+            var propertyDTO = PropertyMocks.GetDTO();
+
+            _accountService.Setup(a => a.GetUserAsyc(It.IsAny<string>())).ThrowsAsync(new Exception("error"));
+
+            var result = await _propertiesController.PutAsync(propertyDTO) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(500));
+        }
+
+        [Test]
+        public async Task Patch_Correctly()
+        {
+            int id = 1;
+            var propPrice = PropertyMocks.GetPropertyPriceDTO();
+
+            _propertyService.Setup(a => a.UpdatePriceAsync(It.IsAny<int>(), It.IsAny<decimal>()));
+
+            var result = await _propertiesController.PatchPrice(id, propPrice) as ObjectResult;
+
+            Assert.IsNotNull(result);
             Assert.That(result.StatusCode, Is.EqualTo(200));
+        }
+
+        [Test]
+        public async Task Patch_NotFound()
+        {
+            int id = 1;
+            var propPrice = PropertyMocks.GetPropertyPriceDTO();
+
+            _propertyService.Setup(a => a.UpdatePriceAsync(It.IsAny<int>(), It.IsAny<decimal>())).ThrowsAsync(new NotFoundException("error"));
+
+            var result = await _propertiesController.PatchPrice(id, propPrice) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(404));
+        }
+
+        [Test]
+        public async Task Patch_InternalServerError()
+        {
+            int id = 1;
+            var propPrice = PropertyMocks.GetPropertyPriceDTO();
+            _propertyService.Setup(a => a.UpdatePriceAsync(It.IsAny<int>(), It.IsAny<decimal>())).ThrowsAsync(new Exception("error"));
+
+            var result = await _propertiesController.PatchPrice(id, propPrice) as ObjectResult;
+
+            Assert.IsNotNull(result);
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
     }
 }

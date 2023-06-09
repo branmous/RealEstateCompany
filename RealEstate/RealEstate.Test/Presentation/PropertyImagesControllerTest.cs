@@ -89,13 +89,17 @@ namespace RealEstate.Test.Presentation
         public async Task PostSetImagesAsync_InternalError()
         {
             int id = 1;
-            var formFiles = new List<IFormFile>();
-            _propertyService.Setup(p => p.FindByIdAsync(id)).ThrowsAsync(new Exception("error"));
+            var formFiles = new List<IFormFile>()
+            {
+                CreateMockFormFile("image1.jpg"),
+                CreateMockFormFile("image2.jpg")
+            };
+            _propertyService.Setup(p => p.FindByIdAsync(id)).ThrowsAsync(new ArgumentNullException());
 
-            var result = await _controller.PostSetImagesAsync(id, formFiles) as BadRequestObjectResult;
+            var result = await _controller.PostSetImagesAsync(id, formFiles) as ObjectResult;
 
             Assert.IsNotNull(result);
-            Assert.That(result.StatusCode, Is.EqualTo(400));
+            Assert.That(result.StatusCode, Is.EqualTo(500));
         }
 
         private IFormFile CreateMockFormFile(string fileName)

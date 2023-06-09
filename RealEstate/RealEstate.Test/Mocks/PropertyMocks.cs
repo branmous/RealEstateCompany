@@ -1,4 +1,5 @@
-﻿using RealEstate.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore.Query.Internal;
+using RealEstate.Domain.Entities;
 using RealEstate.Presentation.DTOs;
 
 namespace RealEstate.Test.Mocks
@@ -49,6 +50,14 @@ namespace RealEstate.Test.Mocks
                 Address = "Florida",
                 CodeInternal = "12345",
                 Price = 2000,
+            };
+        }
+
+        public static PropertyPriceDTO GetPropertyPriceDTO()
+        {
+            return new PropertyPriceDTO
+            {
+                Price = 400
             };
         }
 
