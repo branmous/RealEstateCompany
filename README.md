@@ -16,8 +16,8 @@ The API Real Estate Company web application is a platform designed to obtain inf
 
 1. Clone the repository.
 2. Make sure you have installed [.NET Core SDK](https://dotnet.microsoft.com/download) or install [Visual studio](https://visualstudio.microsoft.com/es/downloads/).
-4. Make sure you have SQL SERVER installed locally. Or download Docker to add an SQL SERVER image.
-5. Configure the database connection string in appsettings.json.
+3. Make sure you have SQL SERVER installed locally. Or download Docker to add an [SQL SERVER image](https://hub.docker.com/_/microsoft-mssql-server).
+4. Configure the database connection string in appsettings.json.
 ```json=
 {
   "ConnectionStrings": {
@@ -25,6 +25,7 @@ The API Real Estate Company web application is a platform designed to obtain inf
   }
 }
 ```
+5. Run the solution
 ## Architecture
 The application follows the Clean Architecture. The layer structure is as follows:
 
